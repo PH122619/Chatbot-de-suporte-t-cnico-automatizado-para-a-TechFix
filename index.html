@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Assistente virtual de suporte técnico e agendamento de assistência especializada em TI.">
+<meta name="theme-color" content="#0F172A">
+<title>Suporte Técnico | TechFix Assistência</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563EB' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z'/%3E%3C/svg%3E">
+<style>
+:root{
+    --tech-950:#090E1A;
+    --tech-900:#0F172A;
+    --tech-800:#1E293B;
+    --tech-700:#2563EB;
+    --tech-600:#1D4ED8;
+    --tech-200:#BFDBFE;
+    --tech-100:#DBEAFE;
+    --tech-50:#EFF6FF;
+    --gray-50:#F8FAFC;
+    --gray-100:#F1F5F9;
+    --gray-200:#E2E8F0;
+    --gray-400:#94A3B8;
+    --gray-500:#64748B;
+    --gray-800:#1E293B;
+    --cyan:#06B6D4;
+    --cyan-700:#0E7490;
+    --cyan-50:#ECFEFF;
+    --emerald:#10B981;
+    --white:#FFFFFF
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background: linear-gradient(rgba(9, 14, 26, 0.75), rgba(30, 41, 59, 0.85)), url('watermarked_img_6383783246742357122.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color:var(--gray-800);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    -webkit-font-smoothing:antialiased;
+}
+
+.chat{
+    width:100%;
+    max-width:480px;
+    height:min(780px,100%);
+    background:var(--white);
+    border-radius:22px;
+    box-shadow:0 24px 60px -12px rgba(15,23,42,.35), 0 0 0 1px rgba(15,23,42,.1);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    backdrop-filter: blur(10px);
+}
+
+.header{
+    background:linear-gradient(135deg, var(--tech-950) 0%, var(--tech-800) 100%);
+    color:var(--white);
+    padding:16px 18px 16px 20px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.logo{
+    width:44px;
+    height:44px;
+    border-radius:12px;
+    background:linear-gradient(135deg, var(--tech-700), var(--cyan));
+    color:var(--white);
+    display:grid;
+    place-items:center;
+    flex:none;
+    box-shadow:0 4px 12px rgba(37,99,235,.35);
+}
+
+.logo svg{width:22px;height:22px}
+.header h1{font-size:1.05rem;font-weight:600;letter-spacing:-.01em}
+.header p{font-size:.78rem;color:var(--tech-200);margin-top:2px;display:flex;align-items:center;gap:6px}
+.dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--emerald);
+    box-shadow:0 0 0 3px rgba(16,185,129,.22);
+}
+
+.actions{margin-left:auto;display:flex;gap:6px}
+.hbtn{
+    width:36px;
+    height:36px;
+    border:1px solid rgba(255,255,255,.16);
+    border-radius:10px;
+    background:rgba(255,255,255,.05);
+    color:var(--white);
+    cursor:pointer;
+    display:grid;
+    place-items:center;
+    transition:all .15s ease;
+}
+
+.hbtn:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3)}
+.hbtn svg{width:17px;height:17px}
+.log{
+    flex:1;
+    overflow-y:auto;
+    padding:20px 16px;
+    background:var(--gray-50);
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    scroll-behavior:smooth;
+}
+
+.log::-webkit-scrollbar{width:6px}
+.log::-webkit-scrollbar-track{background:transparent}
+.log::-webkit-scrollbar-thumb{background:var(--gray-200);border-radius:99px}
+.msg{
+    max-width:85%;
+    padding:12px 15px;
+    border-radius:16px;
+    font-size:.93rem;
+    line-height:1.52;
+    overflow-wrap:anywhere;
+    white-space:pre-line;
+    animation:msgIn .22s ease-out;
+}
+
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}}
+.msg small{display:block;margin-top:5px;font-size:.68rem;opacity:.65;text-align:right}
+.msg.bot{
+    align-self:flex-start;
+    background:var(--white);
+    border:1px solid var(--gray-200);
+    border-top-left-radius:4px;
+    box-shadow:0 2px 6px rgba(15,23,42,.03);
+}
+
+.msg.user{
+    align-self:flex-end;
+    background:linear-gradient(135deg, var(--tech-700), var(--tech-600));
+    color:var(--white);
+    border-top-right-radius:4px;
+    box-shadow:0 4px 12px rgba(37,99,235,.2);
+}
+
+.msg.live::after{
+    content:"";
+    display:inline-block;
+    width:2px;
+    height:1em;
+    background:var(--tech-700);
+    margin-left:3px;
+    vertical-align:-2px;
+    animation:cr 1s steps(2) infinite;
+}
+
+@keyframes cr{50%{opacity:0}}
+.und{
+    align-self:flex-end;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+    gap:5px;
+    max-width:92%;
+    margin-top:-6px;
+    animation:in .3s;
+}
+
+.und span{
+    font-size:.71rem;
+    font-weight:500;
+    color:var(--cyan-700);
+    background:var(--cyan-50);
+    border:1px solid #A5F3FC;
+    border-radius:99px;
+    padding:2px 10px;
+
+}
+
+@keyframes in{from{opacity:0;transform:translateY(3px)}}
+.typing{
+    align-self:flex-start;
+    background:var(--white);
+    border:1px solid var(--gray-200);
+    border-radius:16px;
+    border-top-left-radius:4px;
+    padding:12px 16px;
+    display:flex;
+    gap:5px;
+    align-items:center;
+}
+
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--tech-200);animation:blink 1.1s infinite}
+.typing i:nth-child(2){animation-delay:.18s}
+.typing i:nth-child(3){animation-delay:.36s}
+.typing b{font-weight:500;font-size:.78rem;color:var(--gray-500);margin-left:6px}
+@keyframes blink{0%,80%,100%{opacity:.35}40%{opacity:1;background:var(--tech-700)}}
+.confirm{
+    align-self:flex-start;
+    width:94%;
+    background:var(--cyan-50);
+    border:1px solid #67E8F9;
+    border-left:5px solid var(--cyan);
+    border-radius:14px;
+    padding:15px 16px;
+    animation:in .3s;
+    box-shadow:0 4px 14px rgba(6,182,212,.08);
+}
+
+.confirm h2{
+    font-size:.98rem;
+    color:var(--cyan-700);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:12px;
+}
+
+.confirm h2 svg{width:20px;height:20px;flex:none}
+.confirm.rev{background:var(--tech-50);border-color:var(--tech-200);border-left-color:var(--tech-700);box-shadow:none}
+.confirm.rev h2{color:var(--tech-700)}
+.confirm dl{display:grid;grid-template-columns:auto 1fr;gap:7px 14px;font-size:.86rem}
+.confirm dt{color:var(--gray-500);font-weight:500}
+.confirm dd{font-weight:600;color:var(--gray-800);overflow-wrap:anywhere}
+.card-actions{margin-top:12px;padding-top:10px;border-top:1px dashed rgba(14,116,144,.25);display:flex;gap:8px}
+
+.copy-btn{
+    font:inherit;
+    font-size:.78rem;
+    font-weight:600;
+    color:var(--cyan-700);
+    background:var(--white);
+    border:1px solid #A5F3FC;
+    border-radius:8px;
+    padding:6px 12px;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    transition:all .15s;
+}
+
+.copy-btn:hover{background:var(--cyan-700);color:var(--white);border-color:var(--cyan-700)}
+.chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    padding:10px 16px 2px;
+    background:var(--white);
+    border-top:1px solid var(--gray-200);
+    max-height:135px;
+    overflow-y:auto;
+}
+
+.chips:empty{display:none}
+.chip{
+    font:inherit;
+    font-size:.82rem;
+    font-weight:500;
+    padding:7px 13px;
+    border-radius:99px;
+    border:1.5px solid var(--tech-700);
+    background:var(--white);
+    color:var(--tech-700);
+    cursor:pointer;
+    transition:all .15s ease;
+}
+
+.chip:hover{background:var(--tech-700);color:var(--white);transform:translateY(-1px)}
+.composer{display:flex;gap:10px;padding:12px 16px 8px;background:var(--white)}
+.chips:empty+.composer{border-top:1px solid var(--gray-200)}
+.field{flex:1}
+.field input{
+    width:100%;
+    font:inherit;
+    font-size:.93rem;
+    padding:12px 14px;
+    border:1.5px solid var(--gray-200);
+    border-radius:12px;
+    background:var(--gray-50);
+    color:var(--gray-800);
+    transition:border-color .15s, background .15s;
+}
+
+.field input:focus{border-color:var(--tech-700);background:var(--white);outline:none}
+.send{
+    width:46px;
+    height:46px;
+    flex:none;
+    border:0;
+    border-radius:12px;
+    background:var(--tech-700);
+    color:var(--white);
+    cursor:pointer;
+    display:grid;
+    place-items:center;
+    transition:background .15s, transform .1s;
+}
+
+.send:hover{background:var(--tech-900)}
+.send:active{transform:scale(.96)}
+.send svg{width:19px;height:19px}
+.note{font-size:.71rem;color:var(--gray-500);text-align:center;padding:2px 16px 12px;background:var(--white)}
+.chip:focus-visible,.send:focus-visible,.hbtn:focus-visible,.copy-btn:focus-visible{outline:3px solid rgba(37,99,235,.35);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+@media (max-width:560px){
+    body{padding:0}
+    .chat{max-width:none;height:100%;border-radius:0;box-shadow:none}
+    .msg{max-width:91%}
+}
+
+@media (prefers-reduced-motion:reduce){
+    .typing i,.msg.live::after,.und,.confirm,.msg{animation:none}
+    .log{scroll-behavior:auto}
+}
+
+</style>
+</head>
+<body>
+<main class="chat" aria-label="Assistente virtual da TechFix Assistência">
+<header class="header">
+    <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+    </div>
+<div>
+        <h1>Suporte TechFix</h1>
+        <p><span class="dot"></span>Assistência Técnica • Online</p>
+</div>
+    <div class="actions">
+    <button class="hbtn" id="reset" type="button" aria-label="Iniciar nova conversa" title="Reiniciar conversa">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+        </button>
+    </div>
+</header>
+        <section class="log" id="log" role="log" aria-live="polite" aria-label="Histórico da conversa"></section>
+    <div class="chips" id="chips" role="group" aria-label="Sugestões de resposta"></div>
+    <form class="composer" id="composer" autocomplete="off">
+        <label class="sr" for="input">Digite sua mensagem</label>
+        <div class="field"><input id="input" type="text" placeholder="Ex: meu notebook está lento, quero agendar..." maxlength="300"></div>
+        <button class="send" type="submit" aria-label="Enviar mensagem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg></button>
+    </form>
+<p class="note">Suporte automatizado 24h • Garantia de 90 dias nos serviços</p>
+</main>
+
+<script>
+(function(){
+const C = {
+    brand: 'TechFix Assistência Técnica',
+    phone: '(11) 4000-5678',
+    addr: 'Av. Paulista, 1000, Loja 12',
+    hours: 'segunda a sexta, das 9h às 18h, e sábados, das 9h às 13h',
+    pay: 'Pix, cartão de crédito em até 6x sem juros, débito e dinheiro',
+    warranty: '90 dias',
+    cancel: 12
+};
+
+const SP = {
+    'Formatação e Sistema': {
+        t: ['09:00', '11:00', '14:00', '16:30'],
+            price: 140,
+        k: /format|sistema|windows|linux|mac ?os|software|backup|virus/,
+        s: /lent[oa]|travand|virus|tela azul|nao inicia|erro no windows|atualiz|memoria cheia|programa|sem som|sem internet|wi.?fi/
+},
+    'Limpeza e Manutenção': {
+        t: ['09:30', '11:30', '14:30', '16:00'],
+            price: 160,
+        k: /limpeza|preventiv|pasta termica|manutencao|revisao/,
+        s: /esquent|aquec|barulho|cooler|ventoinha|desligando sozinh|poeira|suj[oa]/
+},
+    'Reparo de Hardware / Tela': {
+        t: ['10:00', '13:30', '15:30', '17:00'],
+            price: 190,
+        k: /hardware|tela|peca|bateria|teclado|conector|placa|ssd|upgrade/,
+        s: /quebr|trinc|nao liga|nao carrega|bateria viciada|tecla|dobradica|entrada|usb|hdmi|display|mancha na tela|mal contato/
+    }
+};
+
+const MENU = ['Agendar atendimento', 'Consultar OS salva', 'Valores e garantia', 'Horário e endereço'];
+const WD = ['dom','seg','ter','qua','qui','sex','sáb'], WL = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'], WS = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+const MES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+const WN = {domingo:0,segunda:1,terca:2,quarta:3,quinta:4,sexta:5,sabado:6};
+
+const $ = id => document.getElementById(id);
+const log = $('log'), bar = $('chips'), input = $('input');
+const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+const sleep = ms => new Promise(r => setTimeout(r,ms));
+const dig = s => s.replace(/\D/g,'');
+const pad = x => String(x).padStart(2,'0');
+const cap = s => s[0].toUpperCase()+s.slice(1);
+const rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const scroll = () => { log.scrollTop = log.scrollHeight; };
+const last = {};
+const pick = (k,a) => { let x; do{ x = a[Math.floor(Math.random()*a.length)]; }while(a.length>1&&x===last[k]); return last[k]=x; };
+const tod = () => { const h = new Date().getHours(); return h<12?'Bom dia':h<18?'Boa tarde':'Boa noite'; };
+const day0 = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
+const wk = x => { const y = new Date(x); y.setHours(0,0,0,0); y.setDate(y.getDate()-(y.getDay()+6)%7); return +y; };
+const lab = s => WD[s.d.getDay()]+', '+pad(s.d.getDate())+'/'+pad(s.d.getMonth()+1)+' às '+s.t;
+const long = s => WL[s.d.getDay()]+', '+s.d.getDate()+' de '+MES[s.d.getMonth()]+' às '+s.t;
+
+const STORAGE_KEY = 'techfix_os_history_v1';
+function loadSavedOS(){
+    try{ return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }catch(e){ return []; }
+}
+function saveOS(record){
+    try{
+    const list = loadSavedOS();
+    list.push(record);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }catch(e){}
+}
+
+function lev(a,b){
+    const m = [];
+        for(let i=0; i<=a.length; i++) m[i] = [i];
+        for(let j=1; j<=b.length; j++) m[0][j] = j;
+        for(let i=1; i<=a.length; i++){
+        for(let j=1; j<=b.length; j++){
+    m[i][j] = Math.min(m[i-1][j]+1, m[i][j-1]+1, m[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
+    }
+}
+return m[a.length][b.length];
+
+}
+const fz = (n,ws) => n.split(/[^a-z0-9]+/).some(t => ws.some(w => t===w || (w.length>=5 && Math.abs(t.length-w.length)<=1 && lev(t,w)<=1)));
+
+function detect(n){
+    const T = r => r.test(n);
+        return {
+    danger: T(/fumaca|cheiro de queimad|faisca|curto.?circuito|caiu na agua|molhou|derramei (agua|cafe|liquido)|estufad/),
+    bot: T(/voce (e|eh) (um |uma )?(robo|bot|ia|humano|humana|pessoa|maquina|real)|inteligencia artificial|chat ?gpt|quem (e|eh) voce|seu nome/),
+    human: T(/atendente|humano|tecnico|pessoa de verdade|falar com (alguem|uma pessoa|gente)|ligar|numero|telefone|whatsapp/),
+    hours: T(/funcionamento|a que horas (abre|fecha)|abrem|fecham|horario de atendimento/),
+    addr: T(/endereco|onde (fica|voces|e a loja)|localizacao|como (chego|chegar)|estacionamento/),
+    pay: T(/pagamento|pix|cartao|credito|debito|parcela|dinheiro|aceitam|garantia|prazo/),
+    price: T(/valor|preco|quanto (custa|e|fica|cobra)|custa|orcamento/),
+    prep: T(/documento|o que (levar|preciso levar)|carregador|fonte|backup|antecedencia/),
+    info: T(/servicos|o que (voces )?(atendem|consertam|fazem|reparam)/),
+    remote: T(/acesso remoto|anydesk|teamviewer|online|a distancia/),
+    status: T(/consultar os|minha os|meu protocolo|agendamento salvo|historico|ver protocolo/),
+    cancel: T(/cancel|desmarc/),
+    resch: T(/remarc|reagend/),
+    fix: T(/alterar|corrigir|trocar|mudar|editar|errad|incorret/),
+    restart: T(/reiniciar|recomecar|nova conversa|comecar de novo|novo atendimento/),
+    back: T(/^(voltar|menu|inicio|ajuda|help|opcoes)\b|o que voce (pode|faz)/),
+    thanks: T(/obrigad|valeu|agradec|\bgrat[oa]\b/),
+    bye: T(/tchau|ate (logo|mais|breve)|encerrar|finalizar|so isso|era so isso|nada mais/),
+    hi: T(/^(oi+|ola|ei|opa|e ai|hey|bom dia|boa tarde|boa noite)\b/),
+    small: T(/tudo bem|como (vai|voce esta)|\btd bem\b/),
+    book: fz(n,['agendar','marcar','horario','agendamento','reservar','consertar','arrumar','reparar']) || T(/levar (meu|o) (notebook|pc|computador|celular)/),
+    strong: fz(n,['agendar','marcar','agendamento','reservar']),
+    yes: T(/^(sim|s|claro|isso|exato|correto|certo|pode|ok|okay|beleza|combinado|confirm\w*|perfeito|com certeza|uhum|aham|ta (bom|certo)|esta (bom|certo)|tudo certo)\b/),
+    no: T(/^(nao|n|negativo|nem|errado|incorreto)\b|\b(outra|outro|diferente)\b/)
+};
+}
+
+const spOf = n => Object.keys(SP).find(k => SP[k].k.test(n));
+const sugOf = n => Object.keys(SP).find(k => SP[k].s.test(n));
+const PART = /^(da|de|do|das|dos|e)$/;
+
+function nameOf(t){
+    const s = t.replace(/^\s*(meu nome (e|é)|me chamo|eu sou|sou (o|a)|aqui (e|é))\s+/i,'').replace(/[.,!]+$/,'').trim();
+    const w = s.split(/\s+/);
+        if(w.length < 2 || w.length > 6 || !/^[\p{L}'-]+(\s[\p{L}'.-]+)*$/u.test(s) || w.some(x => x.length < 2 && !PART.test(x.toLowerCase())) || /agend|marcar|quero|preciso|^oi\b|^ola\b/.test(norm(s))) return null;
+return w.map((x,i) => i && PART.test(x.toLowerCase()) ? x.toLowerCase() : cap(x.toLowerCase())).join(' ');
+}
+
+const FIELD = {
+    name: nameOf,
+    phone: t => {
+let d = dig(t);
+    if(d.length > 11 && d.startsWith('55')) d = d.slice(2);
+return d.length === 11 ? '(' + d.slice(0,2) + ') ' + d.slice(2,7) + '-' + d.slice(7) : d.length === 10 ? '(' + d.slice(0,2) + ') ' + d.slice(2,6) + '-' + d.slice(6) : null;
+},
+    device: t => t.trim().length >= 3 ? t.replace(/^\s*(e um|é um|meu aparelho e|meu aparelho é|aparelho)\s+/i,'').trim() : null
+};
+
+function pref(n){
+    n = n.replace(/\b(bom dia|boa tarde|boa noite)\b/g,' ');
+        const p = {};
+  let m;
+    if(/depois de amanha/.test(n)) p.off = 2;
+else if(/\bamanha\b/.test(n)) p.off = 1;
+    if(/\bhoje\b/.test(n)) p.today = 1;
+    if(m = n.match(/\b(segunda|terca|quarta|quinta|sexta|sabado|domingo)(?:[- ]feira)?\b(?!\s+opcao)/)) p.wd = WN[m[1]];
+    if(/semana que vem|proxima semana/.test(n)) p.wk = 1;
+    if(m = n.match(/\b(\d{1,2})\s*\/\s*(\d{1,2})\b/)){ p.dd = +m[1]; p.mm = +m[2]; }
+else if(m = n.match(/\bdia (\d{1,2})\b/)) p.dd = +m[1];
+    if(m = n.match(/\b([01]?\d|2[0-3])(?::([0-5]\d)|\s?h(?:oras?)?(?:\s?([0-5]\d))?)\b/)){
+        p.h = +m[1];
+    if(m[2] || m[3]) p.mi = +(m[2] || m[3]);
+} else if(m = n.match(/\bas ([01]?\d|2[0-3])\b(?!\s*\/)/)) {
+    p.h = +m[1];
+}
+    if(/\b(manha|cedo)\b/.test(n)) p.per = 'm';
+else if(/\btarde\b|fim do dia/.test(n)) p.per = 't';
+return p;
+}
+const dsc = p => [p.off === 1 ? 'amanhã' : p.off === 2 ? 'depois de amanhã' : '', p.wd != null ? WS[p.wd] : '', p.dd ? 'dia ' + p.dd + (p.mm ? '/' + p.mm : '') : '', p.wk ? 'semana que vem' : '', p.per === 'm' ? 'de manhã' : p.per === 't' ? 'à tarde' : '', p.h != null ? 'por volta das ' + p.h + 'h' : ''].filter(Boolean).join(', ');
+
+function slots(k){
+    const r = [];
+        for(let i=1; i<=21; i++){
+    const d = day0();
+    d.setDate(d.getDate() + i);
+        if(d.getDay() % 6 === 0) continue;
+    SP[k].t.forEach(t => {
+    const [h,mi] = t.split(':').map(Number);
+        if((d.getDate()*7 + d.getMonth()*3 + h*5 + k.length) % 10 < 3) return;
+    r.push({d,t,h,mi,per: h < 12 ? 'm' : 't'});
+    });
+}
+return r;
+}
+
+function match(s,p){
+    const d = s.d, t = day0();
+        if(p.off && Math.round((d - t)/864e5) !== p.off) return 0;
+    if(p.wd != null && d.getDay() !== p.wd) return 0;
+    if(p.dd && (d.getDate() !== p.dd || (p.mm && d.getMonth()+1 !== p.mm))) return 0;
+    if(p.wk && wk(d) !== wk(new Date(t.getTime() + 6048e5))) return 0;
+    if(p.h != null && (s.h !== p.h || (p.mi != null && s.mi !== p.mi))) return 0;
+    if(p.per && s.per !== p.per) return 0;
+return 1;
+}
+
+function find(k,p){
+    const all = slots(k), q = {...p};
+        let l = all.filter(s => match(s,q)), exact = 1;
+            for(const ks of [['h','mi'],['per'],['wd','dd','mm','off','wk']]){
+        if(l.length) break;
+    exact = 0;
+    ks.forEach(x => delete q[x]);
+    l = all.filter(s => match(s,q));
+}
+return {l: l.slice(0,4), exact};
+}
+
+let S, busy = false, nl = null, ue = null;
+const fresh = () => ({aw: null, sp: null, slot: null, pref: {}, name: null, phone: null, device: null, offered: [], sug: null, fails: 0, appts: []});
+function rich(el,t){
+    el.textContent = '';
+        t.split('**').forEach((p,i) => {
+            if(i % 2){
+    const b = document.createElement('strong');
+        b.textContent = p;
+    el.appendChild(b);
+    } else {
+    el.appendChild(document.createTextNode(p));
+    }
+});
+}
+
+function stamp(el){
+        const s = document.createElement('small'), d = new Date();
+    s.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes());
+    el.appendChild(s);
+}
+
+function addUser(t){
+        const el = document.createElement('div');
+    el.className = 'msg user';
+    el.textContent = t;
+stamp(el);
+        log.appendChild(el);
+    ue = el;
+scroll();
+}
+
+function tag(u,l){
+            if(!u) return;
+        const d = document.createElement('div');
+    d.className = 'und';
+    l.forEach(x => {
+        const s = document.createElement('span');
+    s.textContent = x;
+    d.appendChild(s);
+});
+u.after(d);
+scroll();
+}
+
+function chips(a){
+    bar.innerHTML = '';
+(a || []).forEach(l => {
+        const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip';
+    b.textContent = l;
+    b.onclick = () => send(l);
+    bar.appendChild(b);
+});
+}
+
+async function say(text,lab){
+        const L = lab || nl || ['Analisando mensagem'];
+    nl = null;
+        const t = document.createElement('div');
+    t.className = 'typing';
+    t.setAttribute('aria-hidden','true');
+    t.innerHTML = '<i></i><i></i><i></i><b></b>';
+        log.appendChild(t);
+scroll();
+        const dur = rm ? 0 : Math.min(1350, 480 + text.length*5);
+        for(const x of L){
+    t.lastChild.textContent = x;
+    await sleep(dur / L.length);
+}
+t.remove();
+
+        const el = document.createElement('div');
+    el.className = 'msg bot';
+        log.appendChild(el);
+        if(!rm) el.classList.add('live');
+        let acc = '';
+        for(const w of text.match(/\S+\s*/g) || []){
+    acc += w;
+    rich(el, acc);
+scroll();
+        if(!rm) await sleep(/[.:?!]\s*$/.test(w) ? 155 : /,\s*$/.test(w) ? 80 : 24);
+}
+    el.classList.remove('live');
+    rich(el, text);
+    stamp(el);
+scroll();
+}
+
+function card(title,rows,ok,protocolId){
+        const b = document.createElement('div');
+    b.className = 'confirm' + (ok ? '' : ' rev');
+    b.setAttribute('role','status');
+        const h = document.createElement('h2');
+        if(ok) h.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m8 12.5 2.8 2.8L16 9.5"/></svg>';
+    h.appendChild(document.createTextNode(title));
+        const dl = document.createElement('dl');
+rows.forEach(([k,v]) => {
+        const dt = document.createElement('dt'), dd = document.createElement('dd');
+    dt.textContent = k;
+    dd.textContent = v;
+    dl.append(dt, dd);
+});
+    b.append(h, dl);
+        if(ok && protocolId){
+        const act = document.createElement('div');
+    act.className = 'card-actions';
+        const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'copy-btn';
+    btn.textContent = 'Copiar protocolo (' + protocolId + ')';
+    btn.onclick = () => {
+      navigator.clipboard?.writeText(protocolId);
+    btn.textContent = 'Protocolo copiado!';
+        setTimeout(() => { btn.textContent = 'Copiar protocolo (' + protocolId + ')'; }, 2000);
+};
+    act.appendChild(btn);
+    b.appendChild(act);
+}
+        log.appendChild(b);
+scroll();
+}
+
+const rows = () => [
+    ['Cliente', S.name],
+    ['WhatsApp', S.phone],
+    ['Equipamento', S.device],
+    ['Serviço', S.sp],
+    ['Horário', long(S.slot)]
+];
+
+async function advance(lead){
+        const s = S;
+s.fails = 0;
+        const L = lead ? lead + ' ' : '';
+        if(!s.sp){
+s.aw = 'specialty';
+    chips(Object.keys(SP));
+return say(L + pick('q1',['Qual serviço técnico você precisa? Se não souber, descreva o problema do aparelho que eu indico a opção certa.','Para qual serviço você quer agendar? Pode também me contar o defeito do equipamento.']));
+
+}
+        if(!s.slot){
+        const r = find(s.sp, s.pref);
+s.offered = r.l;
+s.aw = 'slot';
+        if(!r.l.length){
+    chips();
+return say(L + 'Não encontrei horários livres na bancada nas próximas semanas. Chame nossa equipe no WhatsApp ' + C.phone + '.');
+
+}
+    chips(r.l.map(lab));
+        const d = dsc(s.pref);
+return say(L + (r.exact ? 'Encontrei ' + r.l.length + ' horários para **' + s.sp + '**' + (d ? ' (' + d + ')' : '') + '. Qual fica melhor para você trazer o aparelho?' : 'Não há vaga exatamente ' + (d ? 'para ' + d : 'nessa preferência') + ', mas estes são os horários mais próximos. Algum deles serve?'), ['Consultando bancada','Filtrando horários']);
+
+}
+const need = [
+    ['name','qual é o seu nome completo?'],
+    ['phone','qual WhatsApp ou telefone com DDD para enviarmos o status do reparo?'],
+    ['device','qual é o tipo, marca e modelo do aparelho? (Ex: Notebook Dell Inspiron, PC Gamer, iPhone 13)']
+];
+
+const nx = need.find(([k]) => !s[k]);
+        if(nx){
+        const pre = nx[0] === 'name' && s.aw !== 'name' ? 'Para abrir sua pré-ordem de serviço, preciso de alguns dados. ' : '';
+s.aw = nx[0];
+chips();
+    return say(L + pre + cap(nx[1]));
+}
+s.aw = 'confirm';
+chips();
+await say(L + 'Confira os dados da Ordem de Serviço:', ['Montando resumo da OS']);
+card('Revise os dados da OS', rows());
+chips(['Confirmar agendamento','Alterar um dado']);
+return say('Posso confirmar o agendamento?');
+}
+
+async function finish(){
+const s = S, id = 'OS-' + (100000 + Math.floor(Math.random()*900000));
+const slotText = long(s.slot);
+s.appts.push({id, sp: s.sp, slot: s.slot});
+saveOS({id, client: s.name, phone: s.phone, device: s.device, service: s.sp, date: slotText});
+chips();
+await say('Gerando sua Ordem de Serviço.', ['Reservando bancada','Gerando protocolo OS']);
+card('Ordem de Serviço Agendada', [['Protocolo', id]].concat(rows()), 1, id);
+await say('Enviamos o comprovante para ' + s.phone + '. Traga o aparelho no horário marcado na ' + C.addr + ' (se for notebook, traga também a fonte/carregador).');
+s.sp = s.slot = s.device = null;
+s.pref = {};
+s.aw = null;
+chips(['Agendar outro aparelho','Consultar OS salva','Encerrar atendimento']);
+return say('Já salvei seu nome e contato. Precisa agendar mais algum equipamento ou tirar outra dúvida?');
+}
+
+async function menu(quiet){
+s = S;
+s.fails = 0;
+chips(MENU);
+if(!quiet) await say(pick('m',['Posso ajudar com mais alguma coisa?','Se precisar de algo mais, é só dizer.']));
+
+}
+async function hello(){
+chips();
+nl = ['Iniciando suporte'];
+  await say(tod() + '! Sou o assistente virtual da **' + C.brand + '**. Posso fazer uma pré-triagem do defeito do seu equipamento e agendar um horário na bancada. Como posso ajudar?');
+chips(MENU);
+
+}
+
+function faqs(I,n,sp){
+const a = [];
+    if(I.hours) a.push('Atendemos ' + C.hours + '.');
+    if(I.addr) a.push('Nossa loja fica na ' + C.addr + '.');
+    if(I.pay) a.push('Aceitamos ' + C.pay + '. Todos os serviços contam com garantia de **' + C.warranty + '**.');
+    if(I.price) a.push('Valores base (diagnóstico gratuito): ' + (sp ? [sp] : Object.keys(SP)).map(x => x + ' a partir de R$ ' + SP[x].price).join('; ') + '.');
+    if(I.prep) a.push('Se puder, faça backup dos seus arquivos importantes antes. Para notebooks, lembre-se de trazer o carregador original.');
+    if(I.info) a.push('Realizamos Formatação e Sistema, Limpeza Preventiva e Reparos de Hardware/Tela em notebooks, desktops e smartphones.');
+    if(I.remote) a.push('Para problemas simples de software, também fazemos suporte remoto via AnyDesk. Agende um horário e informe na descrição!');
+    if(I.human) a.push('Nossos técnicos atendem pelo telefone e WhatsApp ' + C.phone + ', ' + C.hours + '.');
+    if(I.bot) a.push('Sou o assistente virtual da TechFix. Faço triagem de defeitos e agendo horários; avaliações físicas ficam com nossos técnicos.');
+return a;
+}
+
+async function pickSlot(n,I){
+const o = S.offered, P = pref(n), op = /\bopcao\b/.test(n);
+let hit = null, i = -1;
+if(/^[1-4]$/.test(n) || op || /^(a |o )?(primeir|terceir|ultim)/.test(n)){
+    i = /ultim/.test(n) ? o.length - 1 : ['primeir|\\b1\\b|\\bum\\b','segund|\\b2\\b|\\bdois\\b','terceir|\\b3\\b|\\btres\\b','quart|\\b4\\b|\\bquatro\\b'].findIndex(r => new RegExp(r).test(n));
+
+}
+if(i >= 0 && o[i]) hit = o[i];
+    else if(/tanto faz|qualquer|primeiro que|mais cedo/.test(n) || (I.yes && o.length === 1)) hit = o[0];
+        else if(Object.keys(P).length && !P.today){
+    const m = o.filter(x => match(x,P));
+    if(m.length === 1) hit = m[0];
+        else if(m.length > 1){
+    S.offered = m;
+    chips(m.map(lab));
+    await say('Mais de um horário combina com isso. Qual você prefere?');
+    return true;
+
+} 
+    else {
+    S.pref = {...S.pref, ...P};
+    await advance('Vou filtrar com essa preferência.');
+    return true;
+
+}
+}
+if(!hit) return false;
+S.slot = hit;
+  await advance('Horário reservado: **' + long(hit) + '**.');
+return true;
+}
+
+async function think(text){
+const s = S, n = norm(text), I = detect(n), aw = s.aw, F = ['name','phone','device'];
+if(I.restart){ S = fresh(); return hello(); }
+    if(I.status){
+        const saved = loadSavedOS();
+            if(!saved.length){ await say('Você ainda não possui nenhuma Ordem de Serviço registrada neste navegador.'); return menu(); }
+        const lastOS = saved[saved.length - 1];
+    await say('Encontrei sua última Ordem de Serviço salva neste navegador:', ['Buscando registro local']);
+    card('Última OS Registrada', [['Protocolo',lastOS.id],['Cliente',lastOS.client],['Equipamento',lastOS.device],['Serviço',lastOS.service],['Horário',lastOS.date]], 1, lastOS.id);    return menu();
+
+}
+if(I.danger){
+    s.aw = null;
+    chips(['Já desliguei, quero agendar']);
+    return say('**Atenção:** Se o aparelho molhou, estufou a bateria ou apresentou fumaça/cheiro de queimado, **desligue-o da tomada imediatamente** e não tente ligá-lo novamente para evitar curto-circuito. Assim que estiver seguro, podemos agendar uma avaliação urgente.', ['Verificando alerta de segurança']);
+
+}
+if(aw === 'cx' && (I.yes || I.no)){
+    const a = s.appts.filter(x => !x.off).pop();
+    s.aw = null;
+    if(I.yes && a){
+    a.off = 1;
+    await say('Ordem de serviço cancelada com sucesso.');
+    } else {
+    await say('Certo, mantive o seu agendamento.');
+    }
+    return menu();
+
+}
+if(F.includes(aw) && !/\?/.test(text) && !I.human && !I.bot){
+    const v = FIELD[aw](text);
+    if(v){
+    s[aw] = v;
+    return advance(aw === 'name' ? pick('nm',['Certo, ','Perfeito, ']) + v.split(' ')[0] + '.' : pick('ok',['Anotado.','Perfeito.','Registrado.']));
+    }
+
+}
+if(aw === 'slot' && await pickSlot(n,I)) return;
+if(aw === 'sug' && (I.yes || I.no) && !spOf(n)){
+    const g = s.sug;
+    s.sug = null;
+    if(I.yes) s.sp = g;
+    return advance(I.yes ? 'Combinado.' : '');
+
+}
+if(aw === 'confirm'){
+    if(I.yes && !I.no && !I.fix) return finish();
+    if((I.no || I.fix) && !/\d/.test(n) && !spOf(n)){
+    s.aw = 'edit';
+    chips(['Nome','WhatsApp','Equipamento','Serviço','Horário']);
+    return say('Sem problema. Qual dado você quer alterar?');
+    }
+
+}
+if(aw === 'edit'){
+    const f = [['name',/nome/],['phone',/telefone|celular|whatsapp|fone/],['device',/equipamento|aparelho|modelo/],['sp',/servico/],['slot',/horario|data|dia|hora/]].find(([,r]) => r.test(n));
+    if(f){
+    s[f[0]] = null;
+    if(f[0] === 'sp') s.slot = null;
+    return advance('Certo.');
+    }
+    if(I.yes || I.no) return advance();
+
+}
+
+const sp = spOf(n), sg = sp ? null : sugOf(n), P = F.includes(aw) ? {} : pref(n), has = Object.keys(P).length;
+const nm = text.match(/(?:meu nome (?:e|é)|me chamo|aqui (?:e|é)|eu sou)\s+(.+)/i), nv = nm && nameOf(nm[1]);
+const pm = n.match(/(?:telefone|celular|whatsapp|zap|fone)\D{0,14}([\d()+ .-]{10,20})/), pv = pm && FIELD.phone(pm[1]);
+const A = faqs(I,n,sp), acted = I.book || sp || sg || has || nv || pv;
+const tags = [];
+if(sp) tags.push('Serviço: ' + sp);
+if(has) dsc(P).split(', ').forEach(x => x && tags.push(cap(x)));
+if(nv) tags.push('Cliente: ' + nv.split(' ')[0]);
+if(tags.length) tag(ue, tags);
+nl = A.length ? ['Consultando base técnica'] : acted ? ['Diagnosticando pedido','Verificando agenda'] : ['Lendo mensagem'];
+
+if(I.cancel || I.resch){
+    const a = s.appts.filter(x => !x.off).pop();
+    if(!a){
+    await say('Não encontrei ordens de serviço abertas nesta conversa. Para alterar um agendamento anterior, chame no WhatsApp ' + C.phone + '.');
+    return menu();
+    }
+    if(I.resch){
+    a.off = 1;
+    s.sp = a.sp;
+    s.slot = null;
+      return advance('Vamos remarcar o serviço **' + a.sp + '**.');
+    
+    }
+    s.aw = 'cx';
+    chips(['Sim, cancelar','Não, manter']);
+    return say('Deseja cancelar a OS de **' + a.sp + '** , ' + lab(a.slot) + ' (protocolo ' + a.id + ')?');
+
+}
+if(A.length){
+    for(const t of A) await say(t);
+    return I.strong || sp || (aw && aw !== 'edit') ? advance('Voltando ao seu agendamento.') : menu();
+
+}
+if(sp){ if(s.sp && s.sp !== sp) s.slot = null; s.sp = sp; }
+if(has){
+    if(P.off || P.wd != null || P.dd || P.wk) ['off','wd','dd','mm','wk'].forEach(k => delete s.pref[k]);
+    s.pref = {...s.pref, ...P};
+    if(aw === 'confirm') s.slot = null; 
+
+}
+if(nv) s.name = nv;
+if(pv) s.phone = pv;
+if(sg && !s.sp){
+    s.sug = sg;
+    s.aw = 'sug';
+    chips(['Sim, ' + sg,'Outro serviço']);
+    return say('Pelos sintomas descritos, o serviço mais indicado é **' + sg + '**. Posso agendar uma avaliação para esse serviço?', ['Analisando sintomas do aparelho','Associando ao serviço']);
+
+}
+if(acted){
+    let lead = I.hi ? tod() + '.' : '';
+    if(P.today) lead += ' Para o mesmo dia não consigo reservar por aqui (para encaixes urgentes, chame no ' + C.phone + '). Vou buscar a partir de amanhã.';
+    return advance(lead.trim());
+
+}
+
+if(I.thanks){ await say(pick('th',['Por nada! Se precisar de mais algum suporte, é só chamar.','Disponha! Estou por aqui.'])); return menu(1); }
+if(I.bye){ s.aw = null; chips(['Iniciar novo atendimento']); return say('Atendimento encerrado. A ' + C.brand + ' agradece o contato!'); }
+if(I.small){ await say('Tudo certo por aqui! Qual aparelho precisa de atenção hoje?'); return menu(1); }
+if(I.hi || I.back){ s.aw = null; await say(I.hi ? tod() + '! Em qué posso ajudar?' : 'Claro. O que gostaria de fazer?'); return menu(1); }
+
+s.fails++;
+if(s.fails >= 2){
+    s.fails = 0;
+    chips(MENU);
+    return say('Não consegui identificar o que você precisa. Fale com um técnico pelo WhatsApp ' + C.phone + ' ou escolha uma opção abaixo.');
+
+}
+const M = {
+    slot: 'Não entendi o horário escolhido. Toque em uma opção ou digite o dia e a hora (ex: "quinta às 14h").',
+    confirm: 'Posso confirmar a Ordem de Serviço? Responda sim ou diga o que deseja alterar.',
+    specialty: 'Não identifiquei o serviço. Escolha uma opção acima ou descreva o defeito do aparelho.',
+    sug: 'Posso seguir com o serviço recomendado? Responda sim ou escolha outro.',
+    name: 'Informe seu nome e sobrenome.',
+    phone: 'Informe seu WhatsApp/telefone com DDD, ex: (11) 98765-4321.',
+    device: 'Informe o modelo do aparelho (ex: Notebook Lenovo, iPhone 12, PC Desktop).'
+
+};
+if(aw === 'slot') chips(s.offered.map(lab));
+else if(aw === 'specialty') chips(Object.keys(SP));
+else if(!aw) chips(MENU);
+return say(M[aw] || pick('fb',['Não entendi bem. Pode descrever o problema do aparelho ou escolher uma das opções abaixo?']));
+}
+
+async function send(raw){
+const text = raw.trim();
+if(!text || busy) return;
+chips();
+addUser(text);
+busy = true;
+log.setAttribute('aria-busy','true');
+try{
+    await think(text);
+}catch(e){
+    console.error(e);
+    await say('Ocorreu um erro técnico. Pode repetir?');
+}finally{
+
+    busy = false;
+    log.setAttribute('aria-busy','false');
+    input.focus({preventScroll:true});
+}
+}
+function boot(){
+log.innerHTML = '';
+S = fresh();
+busy = true;
+hello().then(() => { busy = false; });
+
+}
+$('composer').addEventListener('submit', e => {
+e.preventDefault();
+if(busy) return;
+const v = input.value;
+input.value = '';
+send(v);
+});
+$('reset').addEventListener('click', () => { if(!busy) boot(); });
+boot();
+})();
+</script>
+</body>
+</html>
